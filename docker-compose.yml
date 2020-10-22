@@ -1,0 +1,53 @@
+version : '3'
+ 
+services:
+  peopleapi:
+    #image: peopleapi
+    build: "./peopleapi"
+    ports:
+      - 8082:8080
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://*:8080
+    networks:
+      - dotnetcorepromgrafana
+
+  locationsapi:
+    #image: locationsapi
+    build: "./locationsapi"
+    ports:
+      - 8084:8080
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://*:8080
+    networks:
+      - dotnetcorepromgrafana
+
+  prometheus:
+    build: './prometheus'
+    restart: always
+    ports:
+      - 9090:9090
+    #volumes:
+      #- ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      #:ro
+    networks:
+      - dotnetcorepromgrafana
+
+  grafana: 
+    image: grafana/grafana 
+    #command:
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=123@123aA
+      - GF_USERS_ALLOW_SIGN_UP=true
+
+    restart: always
+    ports:
+      - 3000:3000
+    networks:
+      - dotnetcorepromgrafana
+
+### put all the networks here
+networks:
+  dotnetcorepromgrafana:
